@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+/*package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -15,8 +15,8 @@ public class liftTeleOp extends OpMode {
     // Declare OpMode members.
     private DcMotor arm = null;
     private DcMotor lift = null;
-    double ticks = 751.8;
-    double newTarget;
+    public double ticks = 751.8;
+   public double newTarget;
     boolean precision;
 
     @Override
@@ -30,8 +30,7 @@ public class liftTeleOp extends OpMode {
         telemetry.update();
 
         //Encoder setup
-        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
     }
 
     @Override
@@ -39,29 +38,23 @@ public class liftTeleOp extends OpMode {
 
 
         if (gamepad1.a) {
-            lift.setPower(0.5);
+
         }
         telemetry.addData("Motor Ticks: ", lift.getCurrentPosition());
 
         if (gamepad1.b) {
             reset();
         }
-        lift.setPower(0);
-    }
-    public void liftEncode(int turnage) {
-        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        newTarget = ticks*turnage;
-        lift.setTargetPosition((int)newTarget);
-        lift.setPower(0.5); // Tweak value to increase/decrease speed
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
     }
+
     public void reset() { //resets the motors to its origin
         lift.setTargetPosition(0);
         lift.setPower(0.5);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        arm.setTargetPosition(0);
-        arm.setPower(0.5);
-        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
     }
 }
+
+
+ */
