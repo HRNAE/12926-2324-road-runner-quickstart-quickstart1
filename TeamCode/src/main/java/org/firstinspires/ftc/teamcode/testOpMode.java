@@ -17,18 +17,24 @@ public class testOpMode extends LinearOpMode {
     private DcMotor rightFront = null;
     private DcMotor leftBack = null;
     private DcMotor rightBack = null;
-
- //   private DcMotor arm = null;
+    private DcMotor arm = null;
     private DcMotor lift = null;
+    private Servo rightClaw = null;
+    private Servo leftClaw = null;
+    private Servo launcher = null;
+    private Servo wrist = null;
+
+
     double movement;
     double rotation;
     double strafe;
     double ticks = 751.8;
     double newTarget;
+    double  armNewTarget;
+    double index = -0.33;
 
     // 12926 Driver Controls
-    private void driverControl() {
-
+    private void runDriveTrain() {
         movement = gamepad1.left_stick_y;
         rotation = gamepad1.right_stick_x;
         strafe = gamepad1.left_stick_x;
@@ -72,12 +78,19 @@ public class testOpMode extends LinearOpMode {
         rightFront = hardwareMap.get(DcMotor.class, "RF");
         leftBack = hardwareMap.get(DcMotor.class, "LB");
         rightBack = hardwareMap.get(DcMotor.class, "RB");
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-   //     arm = hardwareMap.get(DcMotor.class, "arm");
+        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        arm = hardwareMap.get(DcMotor.class, "arm");
         lift = hardwareMap.get(DcMotor.class, "lift");
-        //arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        rightClaw = hardwareMap.get(Servo.class, "rightClaw");
+        leftClaw = hardwareMap.get(Servo.class, "leftClaw");
+        launcher = hardwareMap.get(Servo.class, "planeLauncher");
+        wrist = hardwareMap.get(Servo.class, "wrist");
 
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
@@ -87,7 +100,7 @@ public class testOpMode extends LinearOpMode {
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
 
 //        boolean changeDrive = true;
@@ -103,7 +116,7 @@ public class testOpMode extends LinearOpMode {
 //                    changeDrive = false;
 //                }
 
-                driverControl();
+                runDriveTrain();
                 //resetLift();
                 //cascadinglift();
                 // test();
@@ -117,25 +130,63 @@ public class testOpMode extends LinearOpMode {
 
     private void lift() {
         if (gamepad1.a) {
-            tracker();
+            reset();
         }
         if (gamepad1.b) {
-            encoder(-0.5);
+            liftEncode(-1);
         }
+        if (gamepad1.x) {
+            armEncode(-5);
+        }
+        if (gamepad1.dpad_down) {
+            index -= 0.005;
+            launcher.setPosition(index);
+/*
+Starting values:
+wrist = 0.93
+leftClaw = 1
+*/
+        }
+        if (gamepad1.dpad_up) {
+            index += 0.005;
+            launcher.setPosition(index);
+        }
+ /*
+Starting values:
+wrist = 0.445
+leftClaw = 0.73
+
+*/
     }
 
-    private void encoder(double turnage) {
+    public void liftEncode(double turnage) {
         lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         newTarget = ticks / turnage;
         lift.setTargetPosition((int) newTarget);
-        lift.setPower(-.5);
+        lift.setPower(-.2);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
+    public void armEncode(double turnage) {
+        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armNewTarget = ticks / turnage;
+        arm.setTargetPosition((int) newTarget);
+        arm.setPower(-.2);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
 
-    public void tracker() {
+    public void reset() {
         lift.setTargetPosition(0);
-        lift.setPower(0.5);
+        lift.setPower(0.2);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        arm.setTargetPosition(0);
+        arm.setPower(0.2);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        rightClaw.setPosition(-0.33);
+        leftClaw.setPosition(1);
+        launcher.setPosition(0.5);
+        wrist.setPosition(0.93);
     }
 
     private void telemetry() {
@@ -146,9 +197,8 @@ public class testOpMode extends LinearOpMode {
         //       telemetry.addData("Lift 1 position", Double.parseDouble(JavaUtil.formatNumber(Lift1.getCurrentPosition(), 2)));
         //      telemetry.addData("Lift 2 position", Double.parseDouble(JavaUtil.formatNumber(Lift2.getCurrentPosition(), 2)));
         //    telemetry.addData("Angle Lift Position", Double.parseDouble(JavaUtil.formatNumber(ExtLift.getCurrentPosition(), 2)));
+        telemetry.addData("index = ", index);
+        telemetry.addData("precision: ", gamepad1.right_bumper);
         telemetry.update();
     }
 }
-
-
-
