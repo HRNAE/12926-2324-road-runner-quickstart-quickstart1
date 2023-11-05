@@ -24,6 +24,8 @@ public class testOpMode extends LinearOpMode {
     private Servo leftClaw = null;
     private Servo launcher = null;
     private Servo wrist = null;
+    private ColorSensor color1  = null;
+    private  ColorSensor color2 = null;
 
 
     double movement;
@@ -70,8 +72,6 @@ public class testOpMode extends LinearOpMode {
 
 
     // Define a variable for our color sensor
-    ColorSensor color1;
-    ColorSensor color2;
 
 
 
@@ -127,15 +127,12 @@ public class testOpMode extends LinearOpMode {
 
                 lift();
                 telemetry();
-                while (opModeIsActive()) {
-                    x = color1.red();
-                    y = color1.blue();
-                    z = color1.green();
-                    x2 = color2.red();
-                    y2 = color2.blue();
-                    z2 = color2.green();
-
-                }
+                x = color1.red();
+                y = color1.blue();
+                z = color1.green();
+                x2 = color2.red();
+                y2 = color2.blue();
+                z2 = color2.green();
             }
         }
     }
