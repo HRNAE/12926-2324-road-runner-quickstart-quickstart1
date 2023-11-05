@@ -1,7 +1,8 @@
     package org.firstinspires.ftc.teamcode;
-
     import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+    import com.qualcomm.robotcore.hardware.ColorSensor;
     import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+    import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
     import com.qualcomm.robotcore.hardware.DcMotor;
     import com.qualcomm.robotcore.hardware.DcMotorSimple;
     import com.qualcomm.robotcore.hardware.Servo;
@@ -32,6 +33,8 @@ public class testOpMode extends LinearOpMode {
     double newTarget;
     double  armNewTarget;
     double index = -0.33;
+
+    int x, y, z, y2, x2, z2;
 
     // 12926 Driver Controls
     private void runDriveTrain() {
@@ -66,6 +69,14 @@ public class testOpMode extends LinearOpMode {
     }
 
 
+    // Define a variable for our color sensor
+    ColorSensor color1;
+    ColorSensor color2;
+
+
+
+
+
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -92,6 +103,8 @@ public class testOpMode extends LinearOpMode {
         launcher = hardwareMap.get(Servo.class, "planeLauncher");
         wrist = hardwareMap.get(Servo.class, "wrist");
 
+        color1 = hardwareMap.get(ColorSensor.class, "leftSensor");
+        color2 = hardwareMap.get(ColorSensor.class, "rightSensor");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
@@ -109,20 +122,20 @@ public class testOpMode extends LinearOpMode {
         waitForStart();
         if(opModeIsActive()){
             while (opModeIsActive()) {
-//
-//                if (gamepad1.left_bumper && !gamepad1.right_bumper) {
-//                    changeDrive = true;
-//                } else if (!gamepad1.left_bumper && gamepad1.right_bumper) {
-//                    changeDrive = false;
-//                }
 
                 runDriveTrain();
-                //resetLift();
-                //cascadinglift();
-                // test();
-                // dumpMovement();
+
                 lift();
                 telemetry();
+                while (opModeIsActive()) {
+                    x = color1.red();
+                    y = color1.blue();
+                    z = color1.green();
+                    x2 = color2.red();
+                    y2 = color2.blue();
+                    z2 = color2.green();
+
+                }
             }
         }
     }
@@ -194,11 +207,13 @@ leftClaw = 0.73
         telemetry.addData("BL Power", Double.parseDouble(JavaUtil.formatNumber(leftBack.getPower(), 2)));
         telemetry.addData("FR Power", Double.parseDouble(JavaUtil.formatNumber(rightFront.getPower(), 2)));
         telemetry.addData("BR Power", Double.parseDouble(JavaUtil.formatNumber(rightBack.getPower(), 2)));
-        //       telemetry.addData("Lift 1 position", Double.parseDouble(JavaUtil.formatNumber(Lift1.getCurrentPosition(), 2)));
-        //      telemetry.addData("Lift 2 position", Double.parseDouble(JavaUtil.formatNumber(Lift2.getCurrentPosition(), 2)));
+        //    telemetry.addData("Lift 1 position", Double.parseDouble(JavaUtil.formatNumber(Lift1.getCurrentPosition(), 2)));
+        //    telemetry.addData("Lift 2 position", Double.parseDouble(JavaUtil.formatNumber(Lift2.getCurrentPosition(), 2)));
         //    telemetry.addData("Angle Lift Position", Double.parseDouble(JavaUtil.formatNumber(ExtLift.getCurrentPosition(), 2)));
         telemetry.addData("index = ", index);
         telemetry.addData("precision: ", gamepad1.right_bumper);
+        telemetry.addData("rightSensor: ", x + " " + y + " " + z);
+        telemetry.addData("leftSensor: ", x2 + " " + y2 + " " + z2);
         telemetry.update();
     }
 }
