@@ -35,6 +35,7 @@ public class testOpMode extends LinearOpMode {
     double newTarget;
     double  armNewTarget;
     double index = -0.33;
+    double index2 = 0.44;
 
     int x, y, z, y2, x2, z2;
 
@@ -142,32 +143,63 @@ public class testOpMode extends LinearOpMode {
         if (gamepad1.a) {
             reset();
         }
-        if (gamepad1.b) {
-            liftEncode(-1);
-        }
-        if (gamepad1.x) {
-            armEncode(-5);
-        }
-        if (gamepad1.dpad_down) {
-            index -= 0.005;
-            launcher.setPosition(index);
+
 /*
 Starting values:
 wrist = 0.93
 leftClaw = 1
-*/
-        }
-        if (gamepad1.dpad_up) {
-            index += 0.005;
-            launcher.setPosition(index);
-        }
- /*
+rightClaw = -0.53
+
 Starting values:
 wrist = 0.445
 leftClaw = 0.73
 
 */
+
+
+        if (gamepad2.dpad_down) {
+            index -= 0.005;
+            launcher.setPosition(index);
+        }
+        if (gamepad2.dpad_up) {
+            index += 0.005;
+            launcher.setPosition(index);
+        }
+        if (gamepad2.dpad_left) {
+            index2 -= 0.005;
+            rightClaw.setPosition(index2);
+        }
+        if (gamepad2.dpad_right) { //Plane Down
+           //-0.0445
+
+        }
+        if (gamepad1.dpad_left) { //claw
+            leftClaw.setPosition(-0.17);
+            rightClaw.setPosition(0.695);
+        }
+
+        if (gamepad1.dpad_up) {  //Up
+            armEncode(0.7);
+            liftEncode(-0.5);
+            wrist.setPosition(0.245);
+
+        }
+        if (gamepad1.dpad_down) {  //Down
+            lift.setTargetPosition(0);
+            lift.setPower(0.2);
+            lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            arm.setTargetPosition(0);
+            arm.setPower(0.2);
+            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            rightClaw.setPosition(-0.33);
+            leftClaw.setPosition(0);
+            launcher.setPosition(0.5);
+            wrist.setPosition(0.445);
+        }
     }
+
 
     public void liftEncode(double turnage) {
         lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -179,7 +211,7 @@ leftClaw = 0.73
     public void armEncode(double turnage) {
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armNewTarget = ticks / turnage;
-        arm.setTargetPosition((int) newTarget);
+        arm.setTargetPosition((int) armNewTarget);
         arm.setPower(-.2);
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
@@ -207,8 +239,8 @@ leftClaw = 0.73
         //    telemetry.addData("Lift 1 position", Double.parseDouble(JavaUtil.formatNumber(Lift1.getCurrentPosition(), 2)));
         //    telemetry.addData("Lift 2 position", Double.parseDouble(JavaUtil.formatNumber(Lift2.getCurrentPosition(), 2)));
         //    telemetry.addData("Angle Lift Position", Double.parseDouble(JavaUtil.formatNumber(ExtLift.getCurrentPosition(), 2)));
-        telemetry.addData("index = ", index);
-        telemetry.addData("precision: ", gamepad1.right_bumper);
+        telemetry.addData("leftClaw = ", index);
+        telemetry.addData("rightClaw = ", index2);
         telemetry.addData("rightSensor: ", x + " " + y + " " + z);
         telemetry.addData("leftSensor: ", x2 + " " + y2 + " " + z2);
         telemetry.update();
