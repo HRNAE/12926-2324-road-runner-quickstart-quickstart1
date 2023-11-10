@@ -39,25 +39,64 @@ public class testOpMode extends LinearOpMode {
 
     int x, y, z, y2, x2, z2;
 
-    // 12926 Driver Controls
+    //    // 14524 Driver Controls
+    private void driverControl (boolean check) {
+        movement = -gamepad1.left_stick_y;
+        strafe = gamepad1.left_stick_x;
+        rotation = gamepad1.right_stick_x;
+
+        if (check) {
+            leftFront.setPower(movement + strafe + rotation); //x > 0 p = forward
+            rightFront.setPower(-1 * (movement - strafe - rotation)); // negative
+            leftBack.setPower(movement - strafe + rotation);
+            rightBack.setPower(-1 * (movement + strafe - rotation)); // negative
+        }
+        else {
+            runDriveTrain();
+        }
+    }
+
     private void runDriveTrain() {
+        int ratio;
         movement = gamepad1.left_stick_y;
         rotation = gamepad1.right_stick_x;
         strafe = gamepad1.left_stick_x;
 
+        if (gamepad1.right_bumper) {
+            ratio = 2;
+        } else { ratio = 1; }
+        if (rotation > 0.1) {
+            leftBack.setPower(movement/ -ratio);
+            leftFront.setPower(movement / ratio);
+            rightBack.setPower(movement / ratio);
+            rightFront.setPower(movement / -ratio);
+        } else if (rotation < -0.1) {
+            leftBack.setPower(movement / ratio);
+            leftFront.setPower(movement/ -ratio);
+            rightBack.setPower(movement/ -ratio);
+            rightFront.setPower(movement / ratio);
+        } else {
+            leftBack.setPower((movement + rotation) / 2 / ratio);
+            leftFront.setPower((movement - rotation) / 2 / ratio);
+            rightBack.setPower((movement - rotation) / 2 / ratio);
+            rightFront.setPower((movement + rotation) / 2 / ratio);
+        }
+
+/*
         double magnitude = Math.sqrt(Math.pow(gamepad1.left_stick_x, 2) + Math.pow(gamepad1.left_stick_y, 2));
         double direction = Math.atan2(gamepad1.left_stick_x, -gamepad1.left_stick_y);
         boolean precision = gamepad1.right_bumper;
 
         //INFO Increasing speed to a maximum of 1
-        double lf = magnitude * Math.sin(direction + Math.PI / 4) + rotation;
-        double lb = magnitude * Math.cos(direction + Math.PI / 4) + rotation;
-        double rf = magnitude * Math.cos(direction + Math.PI / 4) - rotation;
-        double rb = magnitude * Math.sin(direction + Math.PI / 4) - rotation;
+        double lf = -1 * magnitude * Math.sin(direction + Math.PI) + rotation;
+        double lb = -1 * magnitude * Math.cos(direction + Math.PI) + rotation;
+        double rf = magnitude * Math.cos(direction + Math.PI) - rotation;
+        double rb = magnitude * Math.sin(direction + Math.PI) - rotation;
+
+
 
         double hypot = Math.hypot(movement, strafe);
         double ratio;
-
         if (movement == 0 && strafe == 0)
             ratio = 1;
         else if(precision)
@@ -69,6 +108,13 @@ public class testOpMode extends LinearOpMode {
         leftBack.setPower(ratio * lb);
         rightFront.setPower(ratio * rf);
         rightBack.setPower(ratio * rb);
+
+        telemetry.addData("magnitude: ", gamepad1.left_stick_y);
+        telemetry.addData("direction: ", gamepad1.right_stick_x);
+        telemetry.addData("ratio: ", ratio);
+        telemetry.update();
+   */
+
     }
 
 
@@ -91,8 +137,8 @@ public class testOpMode extends LinearOpMode {
         leftBack = hardwareMap.get(DcMotor.class, "LB");
         rightBack = hardwareMap.get(DcMotor.class, "RB");
 
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotor.Direction.REVERSE);
+
 
         arm = hardwareMap.get(DcMotor.class, "arm");
         lift = hardwareMap.get(DcMotor.class, "lift");
@@ -123,7 +169,9 @@ public class testOpMode extends LinearOpMode {
         waitForStart();
         if(opModeIsActive()){
             while (opModeIsActive()) {
-
+                if (gamepad1.left_bumper) {
+                    driverControl(true);
+                }
                 runDriveTrain();
 
                 lift();
@@ -150,53 +198,53 @@ wrist = 0.93
 leftClaw = 1
 rightClaw = -0.53
 
-Starting values:
-wrist = 0.445
+End values:
+wrist = 0.85 --> 0.395
 leftClaw = 0.73
 
 */
 
 
-        if (gamepad2.dpad_down) {
+        if (gamepad2.a) {       //launcher down
             index -= 0.005;
             launcher.setPosition(index);
         }
-        if (gamepad2.dpad_up) {
+        if (gamepad2.y) {       //launcher up
             index += 0.005;
-            launcher.setPosition(index);
+            launcher.setPosition(0.5);
         }
-        if (gamepad2.dpad_left) {
-            index2 -= 0.005;
-            rightClaw.setPosition(index2);
-        }
-        if (gamepad2.dpad_right) { //Plane Down
-           //-0.0445
-
-        }
-        if (gamepad1.dpad_left) { //claw
-            leftClaw.setPosition(-0.17);
+        if (gamepad2.dpad_left) { //claw close
+            leftClaw.setPosition(0.5);
             rightClaw.setPosition(0.695);
         }
-
-        if (gamepad1.dpad_up) {  //Up
-            armEncode(0.7);
-            liftEncode(-0.5);
-            wrist.setPosition(0.245);
+        if (gamepad2.x) {
+            wrist.setPosition(0.93);
+        }
+        if (gamepad2.b) {
+            wrist.setPosition(0.45);
+        }
+        if (gamepad2.dpad_right) {  //claw open
+            leftClaw.setPosition(0.9);
+            rightClaw.setPosition(0.3);
+        }
+        if ((gamepad2.left_bumper) && (armNewTarget != 1074)) {  //Up
+            armEncode(0.7 );
+            liftEncode(-0.5 / -gamepad2.right_stick_y);
+            wrist.setPosition(0.85);
 
         }
-        if (gamepad1.dpad_down) {  //Down
+        if (gamepad2.dpad_down) {  //Down
             lift.setTargetPosition(0);
             lift.setPower(0.2);
             lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+
+
             arm.setTargetPosition(0);
             arm.setPower(0.2);
             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            armNewTarget = 0;
 
-            rightClaw.setPosition(-0.33);
-            leftClaw.setPosition(0);
-            launcher.setPosition(0.5);
-            wrist.setPosition(0.445);
         }
     }
 
@@ -212,7 +260,7 @@ leftClaw = 0.73
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armNewTarget = ticks / turnage;
         arm.setTargetPosition((int) armNewTarget);
-        arm.setPower(-.2);
+        arm.setPower(-.1);
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
@@ -229,6 +277,7 @@ leftClaw = 0.73
         leftClaw.setPosition(1);
         launcher.setPosition(0.5);
         wrist.setPosition(0.93);
+        armNewTarget = 0;
     }
 
     private void telemetry() {
@@ -240,7 +289,6 @@ leftClaw = 0.73
         //    telemetry.addData("Lift 2 position", Double.parseDouble(JavaUtil.formatNumber(Lift2.getCurrentPosition(), 2)));
         //    telemetry.addData("Angle Lift Position", Double.parseDouble(JavaUtil.formatNumber(ExtLift.getCurrentPosition(), 2)));
         telemetry.addData("leftClaw = ", index);
-        telemetry.addData("rightClaw = ", index2);
         telemetry.addData("rightSensor: ", x + " " + y + " " + z);
         telemetry.addData("leftSensor: ", x2 + " " + y2 + " " + z2);
         telemetry.update();
