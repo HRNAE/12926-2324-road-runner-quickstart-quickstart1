@@ -96,7 +96,7 @@ public class testOpMode extends LinearOpMode {
         double rf = magnitude * Math.cos(direction + Math.PI) - rotation;
         double rb = magnitude * Math.sin(direction + Math.PI) - rotation;
 
-
+//hgug
 
         double hypot = Math.hypot(movement, strafe);
         double ratio;
