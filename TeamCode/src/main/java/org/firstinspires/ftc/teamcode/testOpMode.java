@@ -57,6 +57,7 @@ public class testOpMode extends LinearOpMode {
     }
 
     private void runDriveTrain() {
+        /*
         int ratio;
         movement = gamepad1.left_stick_y;
         rotation = gamepad1.right_stick_x;
@@ -66,15 +67,15 @@ public class testOpMode extends LinearOpMode {
             ratio = 2;
         } else { ratio = 1; }
         if (rotation > 0.1) {
-            leftBack.setPower(movement/ -ratio);
-            leftFront.setPower(movement / ratio);
-            rightBack.setPower(movement / ratio);
-            rightFront.setPower(movement / -ratio);
-        } else if (rotation < -0.1) {
-            leftBack.setPower(movement / ratio);
-            leftFront.setPower(movement/ -ratio);
-            rightBack.setPower(movement/ -ratio);
+            leftBack.setPower(movement/ ratio);
+            leftFront.setPower(movement / -ratio);
+            rightBack.setPower(movement / -ratio);
             rightFront.setPower(movement / ratio);
+        } else if (rotation < -0.1) {
+            leftBack.setPower(movement / -ratio);
+            leftFront.setPower(movement/ ratio);
+            rightBack.setPower(movement/ ratio);
+            rightFront.setPower(movement / -ratio);
         } else {
             leftBack.setPower((movement + rotation) / 2 / ratio);
             leftFront.setPower((movement - rotation) / 2 / ratio);
@@ -82,7 +83,9 @@ public class testOpMode extends LinearOpMode {
             rightFront.setPower((movement + rotation) / 2 / ratio);
         }
 
-/*
+*/
+
+
         double magnitude = Math.sqrt(Math.pow(gamepad1.left_stick_x, 2) + Math.pow(gamepad1.left_stick_y, 2));
         double direction = Math.atan2(gamepad1.left_stick_x, -gamepad1.left_stick_y);
         boolean precision = gamepad1.right_bumper;
@@ -113,7 +116,6 @@ public class testOpMode extends LinearOpMode {
         telemetry.addData("direction: ", gamepad1.right_stick_x);
         telemetry.addData("ratio: ", ratio);
         telemetry.update();
-   */
 
     }
 
@@ -214,23 +216,23 @@ leftClaw = 0.73
             launcher.setPosition(0.5);
         }
         if (gamepad2.dpad_left) { //claw close
-            leftClaw.setPosition(0.5);
+            leftClaw.setPosition(0);
             rightClaw.setPosition(0.695);
         }
         if (gamepad2.x) {
-            wrist.setPosition(0.93);
+            wrist.setPosition(0.85);
         }
         if (gamepad2.b) {
-            wrist.setPosition(0.45);
+            wrist.setPosition(0.5);
         }
         if (gamepad2.dpad_right) {  //claw open
-            leftClaw.setPosition(0.9);
+            leftClaw.setPosition(0.5);
             rightClaw.setPosition(0.3);
         }
-        if ((gamepad2.left_bumper) && (armNewTarget != 1074)) {  //Up
-            armEncode(0.7 );
+        if ((gamepad2.dpad_up) && (armNewTarget != 1074)) {  //Up
+            armEncode(0.7);
             liftEncode(-0.5 / -gamepad2.right_stick_y);
-            wrist.setPosition(0.85);
+            wrist.setPosition(0.80);
 
         }
         if (gamepad2.dpad_down) {  //Down
@@ -253,7 +255,7 @@ leftClaw = 0.73
         lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         newTarget = ticks / turnage;
         lift.setTargetPosition((int) newTarget);
-        lift.setPower(-.2);
+        lift.setPower(-.4);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
     public void armEncode(double turnage) {
@@ -281,16 +283,19 @@ leftClaw = 0.73
     }
 
     private void telemetry() {
-        telemetry.addData("FL Power", Double.parseDouble(JavaUtil.formatNumber(leftFront.getPower(), 2)));
-        telemetry.addData("BL Power", Double.parseDouble(JavaUtil.formatNumber(leftBack.getPower(), 2)));
-        telemetry.addData("FR Power", Double.parseDouble(JavaUtil.formatNumber(rightFront.getPower(), 2)));
-        telemetry.addData("BR Power", Double.parseDouble(JavaUtil.formatNumber(rightBack.getPower(), 2)));
+        //telemetry.addData("FL Power", Double.parseDouble(JavaUtil.formatNumber(leftFront.getPower(), 2)));
+        //telemetry.addData("BL Power", Double.parseDouble(JavaUtil.formatNumber(leftBack.getPower(), 2)));
+        //telemetry.addData("FR Power", Double.parseDouble(JavaUtil.formatNumber(rightFront.getPower(), 2)));
+        //telemetry.addData("BR Power", Double.parseDouble(JavaUtil.formatNumber(rightBack.getPower(), 2)));
         //    telemetry.addData("Lift 1 position", Double.parseDouble(JavaUtil.formatNumber(Lift1.getCurrentPosition(), 2)));
         //    telemetry.addData("Lift 2 position", Double.parseDouble(JavaUtil.formatNumber(Lift2.getCurrentPosition(), 2)));
         //    telemetry.addData("Angle Lift Position", Double.parseDouble(JavaUtil.formatNumber(ExtLift.getCurrentPosition(), 2)));
         telemetry.addData("leftClaw = ", index);
-        telemetry.addData("rightSensor: ", x + " " + y + " " + z);
-        telemetry.addData("leftSensor: ", x2 + " " + y2 + " " + z2);
+        telemetry.addData("leftSensor: ", x + " " + y + " " + z);
+        telemetry.addData("rightSensor: ", x2 + " " + y2 + " " + z2);
+        telemetry.addData("LF: ", leftBack.getPower());
+        //telemetry.addData("leftSensor: ", x2 + " " + y2 + " " + z2);
+
         telemetry.update();
     }
 }
