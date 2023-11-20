@@ -88,12 +88,18 @@ public class Hware {
         wrist.setPosition(0.85);
     }
 
-    public void liftEncode(double turnage) {
-        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftNewTarget = ticks * turnage;
-        lift.setTargetPosition((int) liftNewTarget);
-        lift.setPower(-.4);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    public void liftEncode(double turnage, boolean reset) {
+        if (reset) {
+            lift.setTargetPosition(0);
+            lift.setPower(0.2);
+            lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        } else {
+            lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            liftNewTarget = ticks * turnage;
+            lift.setTargetPosition((int) liftNewTarget);
+            lift.setPower(-.4);
+            lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
     }
     public void armEncode(double turnage, boolean reset) {
         if (reset) {

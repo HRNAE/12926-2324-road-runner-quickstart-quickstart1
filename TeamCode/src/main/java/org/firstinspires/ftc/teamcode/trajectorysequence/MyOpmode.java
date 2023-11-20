@@ -29,26 +29,54 @@ public class MyOpmode extends LinearOpMode {
                     robot.leftClaw.setPosition(0.5);
                 })
 
-                //drop pixel one
                 .lineToSplineHeading(new Pose2d(48, -34, Math.toRadians(180)))
                 .addDisplacementMarker(() -> {
                     robot.clawClose();
                     robot.wristUp();
-                    robot.liftEncode(0.25);
+                    robot.liftEncode(0.25, false);
                     robot.armEncode(1, false);
+                    robot.clawOpen();
+                    robot.liftEncode(0.25, true);
+                    robot.armEncode(1, true);
                 })
-                .waitSeconds(1)
+
                 .forward(108)
                 .back(6)
-                .waitSeconds(1)
-                //pick up claw
+                .addDisplacementMarker(() -> {
+                    robot.clawOpen();
+                    robot.wristDown();
+                    robot.clawClose();
+                    robot.wristUp();
+                })
                 .back(102)
-                .waitSeconds(1)
-                //drop pixels
+                .addDisplacementMarker(() -> {
+                    robot.clawClose();
+                    robot.wristUp();
+                    robot.liftEncode(0.45, false);
+                    robot.armEncode(1, false);
+                    robot.clawOpen();
+                    robot.liftEncode(0.25, true);
+                    robot.armEncode(1, true);
+                })
+
+
                 .forward(102)
-                .waitSeconds(1)
+                .addDisplacementMarker(() -> {
+                    robot.clawOpen();
+                    robot.wristDown();
+                    robot.clawClose();
+                    robot.wristUp();
+                })
                 .back(102)
-                .waitSeconds(1)
+                .addDisplacementMarker(() -> {
+                    robot.clawClose();
+                    robot.wristUp();
+                    robot.liftEncode(0.65, false);
+                    robot.armEncode(1, false);
+                    robot.clawOpen();
+                    robot.liftEncode(0.25, true);
+                    robot.armEncode(1, true);
+                })
 
                 .forward(102)
                 .waitSeconds(1)

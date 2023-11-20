@@ -9,22 +9,7 @@
 
     @TeleOp(name="Meet1OpMode", group="Linear Opmode")
 public class meet1OpMode extends LinearOpMode {
-
         Hware robot = new Hware();
-
-    /*
-    private DcMotor leftFront = null;
-    private DcMotor rightFront = null;
-    private DcMotor leftBack = null;
-    private DcMotor rightBack = null;
-    private DcMotor arm = null;
-    private DcMotor lift = null;
-    private Servo rightClaw = null;
-    private Servo leftClaw = null;
-    private Servo launcher = null;
-    private Servo wrist = null;
-    */
-
     private ColorSensor color1  = null;
     private  ColorSensor color2 = null;
 
@@ -137,7 +122,7 @@ leftClaw = 0.73
         }
         if ((gamepad2.dpad_up) && (robot.armNewTarget != 1074)) {  //Up
             robot.armEncode(1.4, false);
-            robot.liftEncode(-2 / -gamepad2.right_stick_y);
+            robot.liftEncode(-2 / -gamepad2.right_stick_y, false);
             robot.wrist.setPosition(0.80);
 
         }
