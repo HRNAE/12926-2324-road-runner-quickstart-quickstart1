@@ -15,8 +15,11 @@ public class Hware {
     public DcMotor rightBack = null;
     public DcMotor leftBack = null;
     public DcMotor arm, lift;
-    public Servo rightClaw, leftClaw, launcher, wrist;
-
+    public Servo rightClaw = null;
+    public Servo leftClaw = null;
+    public Servo launcher = null;
+    public Servo wristLeft = null;
+    public Servo wristRight = null;
     public double ticks = 751.8;
     public double liftNewTarget;
     public double armNewTarget;
@@ -55,7 +58,8 @@ public class Hware {
         rightClaw = hwMap.get(Servo.class, "rightClaw");
         leftClaw = hwMap.get(Servo.class, "leftClaw");
         launcher = hwMap.get(Servo.class, "planeLauncher");
-        wrist = hwMap.get(Servo.class, "wrist");
+        wristLeft = hwMap.get(Servo.class, "wristLeft");
+        wristRight = hwMap.get(Servo.class, "wristRight");
 
         //Set Zero Power Behavior
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -68,53 +72,6 @@ public class Hware {
         leftFront.setPower(0);
         rightBack.setPower(0);
         rightFront.setPower(0);
-    }
-
-    public void clawClose() {
-        leftClaw.setPosition(0);
-        rightClaw.setPosition(0.695);
-    }
-
-    public void clawOpen() {
-        leftClaw.setPosition(0.5);
-        rightClaw.setPosition(0.3);
-    }
-
-    public void wristDown() {
-        wrist.setPosition(0.5);
-    }
-
-    public void wristUp() {
-        wrist.setPosition(0.85);
-    }
-
-    public void liftEncode(double turnage, boolean reset) {
-        if (reset) {
-            lift.setTargetPosition(0);
-            lift.setPower(0.2);
-            lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        } else {
-            lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            liftNewTarget = ticks * turnage;
-            lift.setTargetPosition((int) liftNewTarget);
-            lift.setPower(-.4);
-            lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-    }
-    public void armEncode(double turnage, boolean reset) {
-        if (reset) {
-            arm.setTargetPosition(0);
-            arm.setPower(0.2);
-            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        } else {
-            arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            armNewTarget = ticks * turnage;
-            arm.setTargetPosition((int) armNewTarget);
-            arm.setPower(-.1);
-            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-
-
     }
 
 

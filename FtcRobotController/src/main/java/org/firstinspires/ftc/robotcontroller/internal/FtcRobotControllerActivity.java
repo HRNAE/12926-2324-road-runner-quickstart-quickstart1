@@ -61,6 +61,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.google.blocks.ftcrobotcontroller.ProgrammingWebHandlers;
 import com.google.blocks.ftcrobotcontroller.runtime.BlocksOpMode;
 import com.qualcomm.ftccommon.ClassManagerFactory;
@@ -333,6 +334,7 @@ public class FtcRobotControllerActivity extends Activity
         popupMenu.inflate(R.menu.ftc_robot_controller);
         AnnotatedHooksClassFilter.getInstance().callOnCreateMenuMethods(
                 FtcRobotControllerActivity.this, popupMenu.getMenu());
+        //FtcDashboard.populateMenu(popupMenu.getMenu()); //NEW CHANGE
         popupMenu.show();
       }
     });
@@ -402,13 +404,14 @@ public class FtcRobotControllerActivity extends Activity
     if (preferencesHelper.readBoolean(getString(R.string.pref_wifi_automute), false)) {
       initWifiMute(true);
     }
-
+    //FtcDashboard.start(null); //NEW CHANGE
     FtcAboutActivity.setBuildTimeFromBuildConfig(BuildConfig.APP_BUILD_TIME);
 
     // check to see if there is a preferred Wi-Fi to use.
     checkPreferredChannel();
 
     AnnotatedHooksClassFilter.getInstance().callOnCreateMethods(this);
+
   }
 
   protected UpdateUI createUpdateUI() {
@@ -480,6 +483,7 @@ public class FtcRobotControllerActivity extends Activity
     if (preferencesHelper != null) preferencesHelper.getSharedPreferences().unregisterOnSharedPreferenceChangeListener(sharedPreferencesListener);
 
     RobotLog.cancelWriteLogcatToDisk();
+
 
     AnnotatedHooksClassFilter.getInstance().callOnDestroyMethods(this);
   }
