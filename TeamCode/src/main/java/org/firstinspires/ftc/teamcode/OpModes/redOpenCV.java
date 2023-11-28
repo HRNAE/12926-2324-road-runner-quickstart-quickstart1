@@ -26,8 +26,8 @@ public class redOpenCV extends LinearOpMode {
     double width = 0;
 
     private OpenCvCamera controlHubCam;  // Use OpenCvCamera class from FTC SDK
-    private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
-    private static final int CAMERA_HEIGHT = 360; // height of wanted camera resolution
+    private static final int CAMERA_WIDTH = 1280; // width  of wanted camera resolution(Old: 640)
+    private static final int CAMERA_HEIGHT = 960; // height of wanted camera resolution(Old : 360)
 
     // Calculate the distance using the formula
     public static final double objectWidthInRealWorldUnits = 3.75;  // Replace with the actual width of the object in real-world units
@@ -112,8 +112,8 @@ public class redOpenCV extends LinearOpMode {
                 Imgproc.putText(input, distanceLabel, new Point(cX + 10, cY + 60), Imgproc.FONT_HERSHEY_SIMPLEX, 0.5, new Scalar(0, 255, 0), 2);
                 // Calculate the centroid of the largest contour
                 Moments moments = Imgproc.moments(largestContour);
-                cY = moments.get_m10() / moments.get_m00();
-                cX = moments.get_m01() / moments.get_m00();
+                cX = moments.get_m10() / moments.get_m00();
+                cY = moments.get_m01() / moments.get_m00();
 
                 // Draw a dot at the centroid
                 String label = "(" + (int) cX + ", " + (int) cY + ")";

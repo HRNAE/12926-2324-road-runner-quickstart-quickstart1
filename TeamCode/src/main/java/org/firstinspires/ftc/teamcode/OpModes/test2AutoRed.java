@@ -2,8 +2,10 @@ package org.firstinspires.ftc.teamcode.OpModes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.opencv.core.*;
@@ -17,17 +19,19 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.ArrayList;
 import java.util.List;
 
-@TeleOp(name = "BLUE OpenCV Testing")
+@Autonomous(name = "RED 69")
 
-public class blueOpenCV extends LinearOpMode {
-
+public class test2AutoRed extends LinearOpMode {
+    double LBnewTarget, LFnewTarget, RBnewTarget, RFnewTarget = 0;
+    double ticks = 537.7;
+    Hware robot;
     double cX = 0;
     double cY = 0;
     double width = 0;
 
     private OpenCvCamera controlHubCam;  // Use OpenCvCamera class from FTC SDK
-    private static final int CAMERA_WIDTH = 1280; // width  of wanted camera resolution
-    private static final int CAMERA_HEIGHT = 720; // height of wanted camera resolution
+    private static final int CAMERA_WIDTH = 1280; // width  of wanted camera resolution(Old: 640)
+    private static final int CAMERA_HEIGHT = 960; // height of wanted camera resolution(Old : 360)
 
     // Calculate the distance using the formula
     public static final double objectWidthInRealWorldUnits = 3.75;  // Replace with the actual width of the object in real-world units
@@ -36,7 +40,7 @@ public class blueOpenCV extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
+        robot = new Hware(hardwareMap);
         initOpenCV();
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
@@ -49,20 +53,15 @@ public class blueOpenCV extends LinearOpMode {
             telemetry.addData("Coordinate", "(" + (int) cX + ", " + (int) cY + ")");
             telemetry.addData("Distance in Inch", (getDistance(width)));
             telemetry.update();
-
-            if(cX < 320)
-            {
-                telemetry.addData("Direction: ", "left");
+            if (getRuntime() > 2) {
+                if (cX < 320) {
+                    telemetry.addData("Direction: ", "left");
+                } else if (cX > 960) {
+                    telemetry.addData("Direction: ", "right");
+                } else if (cX > 320 && cX < 960) {
+                    telemetry.addData("Direction: ", "center");
+                }
             }
-            else if (cX > 960)
-            {
-                telemetry.addData("Direction: ", "right");
-            }
-            else if(cX> 320 && cX< 960)
-            {
-                telemetry.addData("Direction: ", "center");
-            }
-
             // The OpenCV pipeline automatically processes frames and handles detection
         }
 
@@ -130,8 +129,8 @@ public class blueOpenCV extends LinearOpMode {
             Mat hsvFrame = new Mat();
             Imgproc.cvtColor(frame, hsvFrame, Imgproc.COLOR_BGR2HSV);
 
-            Scalar lowerYellow = new Scalar(0, 100, 100);
-            Scalar upperYellow = new Scalar(100, 255, 255);
+            Scalar lowerYellow = new Scalar(100, 100, 100);
+            Scalar upperYellow = new Scalar(200, 255, 255);
 
 
             Mat yellowMask = new Mat();
@@ -168,7 +167,90 @@ public class blueOpenCV extends LinearOpMode {
         double distance = (objectWidthInRealWorldUnits * focalLength) / width;
         return distance;
     }
+    public void encoderLF(double turnage)
+    {
+        robot.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LFnewTarget = ticks * turnage;
+        robot.leftFront.setTargetPosition((int)LFnewTarget);
+        robot.leftFront.setPower(1);
+        robot.leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        LFnewTarget = 0;
+    }
+    public void encoderRF(double turnage)
+    {
+        robot.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RFnewTarget = ticks * turnage;
+        robot.rightFront.setTargetPosition((int)RFnewTarget);
+        robot.rightFront.setPower(1);
+        robot.rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        RFnewTarget = 0;
+    }
+    public void encoderLB(double turnage)
+    {
+        robot.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LBnewTarget = ticks * turnage;
+        robot.leftBack.setTargetPosition((int)LBnewTarget);
+        robot.leftBack.setPower(1);
+        robot.leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        LBnewTarget = 0;  //NEW CHANGE
+    }
+    public void encoderRB(double turnage)
+    {
+        robot.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        RBnewTarget = ticks * turnage;
+        robot.rightBack.setTargetPosition((int)RBnewTarget);
+        robot.rightBack.setPower(1);
+        robot.rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        RBnewTarget = 0;
+    }
+    public void strafe(double magnitude) {
+        encoderLB(-magnitude);
+        encoderLF(magnitude);
+        encoderRB(magnitude);
+        encoderRF(-magnitude);
+        sleep(1000);
+    }
 
+    public void negSlopeDiagonalStrafe(double magnitude) {
+        encoderLB(-magnitude);
+        encoderLF(0);
+        encoderRB(0);
+        encoderRF(-magnitude);
+        sleep(1000);
+    }
+    public void posSlopeDiagonalStrafe(double magnitude) {
+        encoderLB(0);
+        encoderLF(-magnitude);
+        encoderRB(-magnitude);
+        encoderRF(0);
+        sleep(1000);
+    }
+    public void forward(double magnitude) {
+        encoderLB(magnitude);
+        encoderLF(magnitude);
+        encoderRB(magnitude);
+        encoderRF(magnitude);
+        sleep(1000);
+    }
 
+    private void turn(double magnitude) {
+        encoderLB(-magnitude / 50);
+        encoderLF(-magnitude / 50);
+        encoderRB(magnitude / 50);
+        encoderRF(magnitude / 50);
+    }
+    private void clawClose() {
+        robot.leftClaw.setPosition(0.2);
+        robot.rightClaw.setPosition(0.55);
+    }
+
+    private void clawOpen() {
+        robot.leftClaw.setPosition(0.65);
+        robot.rightClaw.setPosition(0.1);
+    }
+    public void wristDown() { robot.wristRight.setPosition(1);}
+
+    public void wristUp() {
+        robot.wristRight.setPosition(0);
+    }
 }
-

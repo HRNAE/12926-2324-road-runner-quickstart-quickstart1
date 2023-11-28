@@ -9,7 +9,7 @@
 //import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 //import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 //import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-//import org.firstinspires.ftc.teamcode.HardwareMap.Hware;
+//import org.firstinspires.ftc.teamcode.HardwareMap.Hardware;
 //import org.firstinspires.ftc.vision.VisionPortal;
 //import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 //
@@ -17,7 +17,7 @@
 //
 //@Autonomous(name = "meet1Auto")
 // public class meet1Auto extends LinearOpMode {
-//    Hware robot = new Hware();
+//    Hardware robot = new Hardware();
 //    ColorSensor leftSensor = null;
 //    ColorSensor rightSensor = null;
 //    int leftD, rightD = 0;
