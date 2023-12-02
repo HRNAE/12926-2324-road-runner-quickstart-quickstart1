@@ -20,7 +20,8 @@ public class TeleOpMode extends LinearOpMode {
     double armNewTarget;
     double liftNewTarget = 100;
     double ticks = 751.8;
-    double ratio = 1;
+    public double ratio = 1;
+
 
     private void driverControl() {
         ratio = 1;
@@ -102,7 +103,7 @@ public class TeleOpMode extends LinearOpMode {
             wristDown();
             //wristRight.setPosition(1);
         }
-        robot.wristRight.setPosition(-gamepad2.right_stick_y);
+        robot.wristRight.setPosition(-gamepad2.right_stick_y/2);
 
         if ((gamepad2.dpad_up) && (liftNewTarget > -1074)) {  //Up
             liftEncode(-2, false);

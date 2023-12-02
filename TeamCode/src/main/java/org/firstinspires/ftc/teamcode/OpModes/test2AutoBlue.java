@@ -58,7 +58,7 @@ public class test2AutoBlue  extends LinearOpMode{
             telemetry.addData("Distance in Inch", (getDistance(width)));
             telemetry.update();
             clawClose();
-            if (getRuntime() > 2) {
+            if (getRuntime() > 3) {
                 if (cX < 320) {
                     telemetry.addData("Direction: ", "left");
                     leftPath();

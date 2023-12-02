@@ -53,7 +53,7 @@ public class test2AutoRed extends LinearOpMode {
             telemetry.addData("Coordinate", "(" + (int) cX + ", " + (int) cY + ")");
             telemetry.addData("Distance in Inch", (getDistance(width)));
             telemetry.update();
-            if (getRuntime() > 2) {
+            if (getRuntime() > 3) {
                 if (cX < 320) {
                     telemetry.addData("Direction: ", "left");
                 } else if (cX > 960) {
